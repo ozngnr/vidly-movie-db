@@ -1,15 +1,16 @@
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { MovieContextProvider } from './context/movieContext';
 import App from './App';
 import './index.css';
 
-render(
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(
   <BrowserRouter>
     <MovieContextProvider>
       <App />
     </MovieContextProvider>
-  </BrowserRouter>,
-  document.getElementById('root')
+  </BrowserRouter>
 );

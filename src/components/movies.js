@@ -6,33 +6,41 @@ import { paginate } from '../utils/paginate';
 import ListGroup from './common/listGroup';
 
 const Movies = () => {
-  const { movies, genres, handleDelete, toggleLike } = useContext(MovieContext);
-  const [selectedGenre, setSelectedGenre] = useState('All Genres');
-  const [page, setPage] = useState({ current: 1, size: 4 });
-  const { current, size } = page;
-  const paginatedMovies = paginate(movies, current, size);
+  const {
+    allMovies,
+    genres,
+    handleDelete,
+    toggleLike,
+    selectedGenre,
+    setSelectedGenre,
+  } = useContext(MovieContext);
 
-  console.log(paginatedMovies);
+  const [page, setPage] = useState({ currentPage: 1, pageSize: 4 });
+  const { currentPage, pageSize } = page;
+
   const handlePageChange = (page) => {
-    setPage((prevPage) => ({ ...prevPage, current: page }));
+    setPage((prevPage) => ({ ...prevPage, currentPage: page }));
   };
 
   const handleGenreSelect = (genre) => {
     setSelectedGenre(genre);
-    setPage((prevPage) => ({ ...prevPage, current: 1 }));
+    setPage((prevPage) => ({ ...prevPage, currentPage: 1 }));
   };
 
   const getPagedMovies = () => {
     const filtered =
       selectedGenre === 'All Genres'
-        ? movies
-        : movies.filter((m) => m.genre.name === selectedGenre);
-    return filtered;
+        ? allMovies
+        : allMovies.filter((m) => m.genre.name === selectedGenre);
+
+    const movies = paginate(filtered, currentPage, pageSize);
+
+    return { count: filtered.length, data: movies };
   };
 
-  const data = getPagedMovies();
+  const { count, data: movies } = getPagedMovies();
 
-  if (movies.length === 0) return <p>There are no movies in the database.</p>;
+  if (count === 0) return <p>There are no movies in the database.</p>;
 
   return (
     <div className="row">
@@ -44,7 +52,7 @@ const Movies = () => {
         />
       </div>
       <div className="col-9">
-        <p>Showing {movies.length} movies in the database.</p>
+        <p>Showing {count} movies in the database.</p>
         <table className="table red">
           <thead>
             <tr>
@@ -57,7 +65,7 @@ const Movies = () => {
             </tr>
           </thead>
           <tbody>
-            {paginatedMovies.map((movie) => (
+            {movies.map((movie) => (
               <tr key={movie._id + 'id'}>
                 <td>{movie.title}</td>
                 <td>{movie.genre.name}</td>
@@ -82,9 +90,9 @@ const Movies = () => {
           </tbody>
         </table>
         <Pagination
-          itemsCount={movies.length}
-          pageSize={size}
-          currentPage={current}
+          itemsCount={count}
+          pageSize={pageSize}
+          currentPage={currentPage}
           onPageChange={handlePageChange}
         />
       </div>
