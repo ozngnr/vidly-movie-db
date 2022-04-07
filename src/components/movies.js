@@ -1,10 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { MovieContext } from '../context/movieContext';
-import { useSortableData } from '../hooks/useSortableData';
+
 import MoviesTable from './moviesTable';
 import Pagination from './common/pagination';
-import { paginate } from '../utils/paginate';
 import ListGroup from './common/listGroup';
+
+import { MovieContext } from '../context/movieContext';
+import { paginate } from '../utils/paginate';
+import { useSortableData } from '../hooks/useSortableData';
 
 const Movies = () => {
   const {

@@ -6,7 +6,7 @@ export const Table = ({ children, ...restProps }) => {
   return <table {...restProps}>{children}</table>;
 };
 
-export const TableHeader = ({ onSort, columns, sortColumn, ...restProps }) => {
+export const TableHeader = ({ onSort, columns, sortColumn }) => {
   return (
     <thead>
       <tr>
@@ -35,9 +35,9 @@ export const TableBody = ({ columns, data }) => {
   return (
     <tbody>
       {data.map((item) => (
-        <tr>
+        <tr key={item._id}>
           {columns.map((column, i) => (
-            <td>{renderCells(item, column)}</td>
+            <td key={i}>{renderCells(item, column)}</td>
           ))}
         </tr>
       ))}

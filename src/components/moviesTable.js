@@ -2,12 +2,19 @@ import React, { useContext } from 'react';
 import Like from './common/like';
 import { MovieContext } from '../context/movieContext';
 import { Table, TableBody, TableHeader } from './common/table';
+import { Link } from 'react-router-dom';
 
 const MoviesTable = ({ movies, onSort, sortColumn }) => {
   const { toggleLike, handleDelete } = useContext(MovieContext);
 
   const columns = [
-    { label: 'Title', path: 'title' },
+    {
+      label: 'Title',
+      path: 'title',
+      content: (movie) => (
+        <Link to={`/movies/${movie._id}`}>{movie.title}</Link>
+      ),
+    },
     { label: 'Genre', path: 'genre.name' },
     { label: 'Stock', path: 'numberInStock' },
     { label: 'Rate', path: 'dailyRentalRate' },
