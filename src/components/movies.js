@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 import MoviesTable from './moviesTable';
 import Pagination from './common/pagination';
@@ -30,6 +31,7 @@ const Movies = () => {
 
   //Filter movies
   const { currentPage, pageSize } = page;
+
   useEffect(() => {
     const filtered =
       selectedGenre === 'All Genres'
@@ -55,6 +57,10 @@ const Movies = () => {
       </div>
 
       <div className="col-9">
+        <Link to="/movies/new" className="btn btn-primary">
+          New Movie
+        </Link>
+
         <p>Showing {moviesCount} movies in the database.</p>
 
         <MoviesTable

@@ -1,21 +1,82 @@
-import React, { useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
 import { MovieContext } from '../context/movieContext';
+import { useParams, useNavigate } from 'react-router-dom';
+import Joi from 'joi-browser';
 
-const Movie = () => {
-  const { movieId } = useParams();
+import NotFound from '../components/common/notFound';
+import Form from './common/form';
+import Input from './common/input';
+import FormButton from './common/formButton';
+import Select from './common/select';
+import { saveMovie } from '../services/fakeMovieService';
+
+const schema = {
+  _id: Joi.string().optional(),
+  title: Joi.string().required().label('Title'),
+  genreId: Joi.string().required().label('Genre'),
+  numberInStock: Joi.number()
+    .min(0)
+    .max(100)
+    .required()
+    .label('Number In Stock'),
+  dailyRentalRate: Joi.number().min(0).max(10).required().label('Rate'),
+};
+
+const MovieForm = () => {
   const navigate = useNavigate();
-  // const { allMovies } = useContext(MovieContext);
-  // const movie = allMovies.find((movie) => movie._id === movieId);
+  const { movieId } = useParams();
+  const { allMovies, genres } = useContext(MovieContext);
+
+  const [movie, setMovie] = useState({
+    _id: '',
+    title: '',
+    genreId: '',
+    numberInStock: '',
+    dailyRentalRate: '',
+  });
+
+  useEffect(() => {
+    if (movieId === 'new') return;
+    const movie = allMovies.find((m) => m._id === movieId);
+
+    movie &&
+      setMovie({
+        _id: movie._id,
+        title: movie.title,
+        genreId: movie.genre._id,
+        numberInStock: movie.numberInStock,
+        dailyRentalRate: movie.dailyRentalRate,
+      });
+  }, [allMovies, movieId]);
+
+  const handleSubmit = () => {
+    saveMovie(movie);
+    navigate('/movies');
+  };
 
   return (
-    <div>
-      <h1>Movie Form {movieId}</h1>
-      <button className="btn btn-primary" onClick={() => navigate('/movies')}>
-        Save
-      </button>
-    </div>
+    <>
+      {movie !== undefined ? (
+        <div className="form">
+          <h1>{movie.title || 'New Movie'}</h1>
+          <Form
+            schema={schema}
+            onSubmit={handleSubmit}
+            formData={movie}
+            setFormData={setMovie}
+          >
+            <Input label="Title" name="title" />
+            <Select label="Genre" name="genreId" options={genres.slice(1)} />
+            <Input label="Number In Stock" name="numberInStock" type="number" />
+            <Input label="Rate" name="dailyRentalRate" />
+            <FormButton label="Save" />
+          </Form>
+        </div>
+      ) : (
+        <NotFound />
+      )}
+    </>
   );
 };
 
-export default Movie;
+export default MovieForm;
