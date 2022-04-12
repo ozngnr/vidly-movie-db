@@ -8,12 +8,15 @@ import ListGroup from './common/listGroup';
 import { MovieContext } from '../context/movieContext';
 import { paginate } from '../utils/paginate';
 import { useSortableData } from '../hooks/useSortableData';
+import SearchBar from './common/searchBar';
 
 const Movies = () => {
   const {
     allMovies,
     genres,
     selectedGenre,
+    searchQuery,
+    handleSearch,
     handleGenreSelect,
     page,
     handlePageChange,
@@ -33,18 +36,21 @@ const Movies = () => {
   const { currentPage, pageSize } = page;
 
   useEffect(() => {
-    const filtered =
-      selectedGenre === 'All Genres'
-        ? sortedMovies
-        : sortedMovies.filter((m) => m.genre.name === selectedGenre);
+    let filtered = sortedMovies;
+
+    if (searchQuery) {
+      filtered = sortedMovies.filter((m) =>
+        m.title.toLowerCase().startsWith(searchQuery.toLowerCase())
+      );
+    } else if (selectedGenre && selectedGenre !== 'All Genres') {
+      filtered = sortedMovies.filter((m) => m.genre.name === selectedGenre);
+    }
     // Slice filtered movies to display
     const movies = paginate(filtered, currentPage, pageSize);
 
     setMoviesCount(filtered.length);
     setMovies(movies);
-  }, [sortedMovies, selectedGenre, currentPage, pageSize]);
-
-  if (moviesCount === 0) return <p>There are no movies in the database.</p>;
+  }, [sortedMovies, selectedGenre, currentPage, pageSize, searchQuery]);
 
   return (
     <div className="row">
@@ -61,7 +67,17 @@ const Movies = () => {
           New Movie
         </Link>
 
-        <p>Showing {moviesCount} movies in the database.</p>
+        {moviesCount === 0 ? (
+          <p style={{ marginTop: '1em' }}>
+            There are no movies in the database.
+          </p>
+        ) : (
+          <p style={{ marginTop: '1em' }}>
+            Showing {moviesCount} movies in the database.
+          </p>
+        )}
+
+        <SearchBar value={searchQuery} onChange={handleSearch} />
 
         <MoviesTable
           movies={movies}

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { MovieContext } from '../context/movieContext';
 import { useParams, useNavigate } from 'react-router-dom';
+import { MovieContext } from '../context/movieContext';
 import Joi from 'joi-browser';
 
 import NotFound from '../components/common/notFound';
@@ -11,7 +11,7 @@ import Select from './common/select';
 import { saveMovie } from '../services/fakeMovieService';
 
 const schema = {
-  _id: Joi.string().optional(),
+  _id: Joi.any(),
   title: Joi.string().required().label('Title'),
   genreId: Joi.string().required().label('Genre'),
   numberInStock: Joi.number()

@@ -4,7 +4,7 @@ import { FormContext } from './form';
 const FormButton = ({ label, onClick }) => {
   const { validate } = useContext(FormContext);
   const isValid = validate();
-  // console.log(isValid);
+  console.log(isValid);
 
   return (
     <button

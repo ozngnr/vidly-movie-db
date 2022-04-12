@@ -7,8 +7,9 @@ const MovieContext = createContext();
 const MovieContextProvider = ({ children }) => {
   const [allMovies, setAllMovies] = useState([]);
   const [genres, setGenres] = useState([]);
-  const [page, setPage] = useState({ currentPage: 1, pageSize: 4 });
   const [selectedGenre, setSelectedGenre] = useState('All Genres');
+  const [page, setPage] = useState({ currentPage: 1, pageSize: 4 });
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleDelete = (id) => {
     const updatedMovies = allMovies.filter((movie) => movie._id !== id);
@@ -20,7 +21,13 @@ const MovieContextProvider = ({ children }) => {
 
   const handleGenreSelect = (genre) => {
     setSelectedGenre(genre);
-    setPage((prevPage) => ({ ...prevPage, currentPage: 1 }));
+    setPage({ ...page, currentPage: 1 });
+  };
+
+  const handleSearch = (genre) => {
+    setSelectedGenre('All Genres');
+    setPage({ ...page, currentPage: 1 });
+    setSearchQuery(genre);
   };
 
   const toggleLike = (id) => {
@@ -48,12 +55,16 @@ const MovieContextProvider = ({ children }) => {
         allMovies,
         genres,
         page,
+        setPage,
         handleDelete,
         handlePageChange,
         handleGenreSelect,
+        handleSearch,
         toggleLike,
         selectedGenre,
         setSelectedGenre,
+        searchQuery,
+        setSearchQuery,
       }}
     >
       {children}
