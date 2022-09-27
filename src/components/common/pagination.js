@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 
 const Pagination = ({ itemsCount, onPageChange, currentPage, pageSize }) => {
   const pagesCount = Math.ceil(itemsCount / pageSize);
-  // Create page numbers for pagination depending
-  // the amount of items in the DB and page size
+  /**
+   * Create page numbers for pagination depending on
+   * the amout of items in the DB and page size
+   */
   const pages = [...Array(pagesCount + 1).keys()].slice(1);
 
   return (

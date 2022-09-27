@@ -34,8 +34,8 @@ export const TableBody = ({ columns, data }) => {
 
   return (
     <tbody>
-      {data.map((item) => (
-        <tr key={item._id}>
+      {data.map((item, index) => (
+        <tr key={item._id || index}>
           {columns.map((column, i) => (
             <td key={i}>{renderCells(item, column)}</td>
           ))}
