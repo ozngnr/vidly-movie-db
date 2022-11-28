@@ -31,21 +31,28 @@ const MovieForm = () => {
     numberInStock: '',
     dailyRentalRate: '',
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (movieId === 'new') return;
 
     const fetchData = async () => {
-      const { data: movieInDb } = await getMovie(movieId);
-      if (!movieInDb) return navigate('/not-found');
+      try {
+        const { data: movieInDb } = await getMovie(movieId);
+        console.log(movieInDb);
 
-      setMovie({
-        _id: movieInDb._id,
-        title: movieInDb.title,
-        genreId: movieInDb.genre._id,
-        numberInStock: movieInDb.numberInStock,
-        dailyRentalRate: movieInDb.dailyRentalRate,
-      });
+        setMovie({
+          _id: movieInDb._id,
+          title: movieInDb.title,
+          genreId: movieInDb.genre._id,
+          numberInStock: movieInDb.numberInStock,
+          dailyRentalRate: movieInDb.dailyRentalRate,
+        });
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          navigate('/not-found');
+        }
+      }
     };
 
     fetchData();
@@ -70,6 +77,8 @@ const MovieForm = () => {
         onSubmit={handleSubmit}
         formData={movie}
         setFormData={setMovie}
+        errors={errors}
+        setErrors={setErrors}
       >
         <Input label="Title" name="title" />
         <Select label="Genre" name="genreId" options={genres.slice(1)} />

@@ -1,11 +1,17 @@
-import React, { useState, createContext } from 'react';
+import React, { createContext } from 'react';
 import Joi from 'joi-browser';
 
 export const FormContext = createContext();
 
-const Form = ({ children, schema, formData, setFormData, onSubmit }) => {
-  const [errors, setErrors] = useState({});
-
+const Form = ({
+  children,
+  formData,
+  setFormData,
+  errors,
+  setErrors,
+  onSubmit,
+  schema,
+}) => {
   // Validate Form
   const validate = () => {
     const options = { abortEarly: false };
@@ -18,7 +24,6 @@ const Form = ({ children, schema, formData, setFormData, onSubmit }) => {
     });
     return updatedErrors;
   };
-
   // Validate Field on change
   const validateProperty = (name, value, schema) => {
     const updatedErrors = { ...errors };
