@@ -10,7 +10,7 @@ import { paginate } from '../utils/paginate';
 import { useSortableData } from '../hooks/useSortableData';
 import SearchBar from './common/searchBar';
 
-const Movies = () => {
+const Movies = ({ user }) => {
   const {
     allMovies,
     genres,
@@ -63,9 +63,11 @@ const Movies = () => {
       </div>
 
       <div className="col-9">
-        <Link to="/movies/new" className="btn btn-primary">
-          New Movie
-        </Link>
+        {user && (
+          <Link to="/movies/new" className="btn btn-primary">
+            New Movie
+          </Link>
+        )}
 
         {moviesCount === 0 ? (
           <p style={{ marginTop: '1em' }}>
@@ -83,6 +85,7 @@ const Movies = () => {
           movies={movies}
           onSort={handleSort}
           sortColumn={sortColumn}
+          user={user}
         />
 
         <Pagination

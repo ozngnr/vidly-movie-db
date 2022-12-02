@@ -4,7 +4,7 @@ import { MovieContext } from '../context/movieContext';
 import { Table, TableBody, TableHeader } from './common/table';
 import { Link } from 'react-router-dom';
 
-const MoviesTable = ({ movies, onSort, sortColumn }) => {
+const MoviesTable = ({ movies, onSort, sortColumn, user }) => {
   const { toggleLike, handleDelete } = useContext(MovieContext);
 
   const columns = [
@@ -26,14 +26,16 @@ const MoviesTable = ({ movies, onSort, sortColumn }) => {
     },
     {
       key: 'delete',
-      content: (movie) => (
-        <button
-          onClick={() => handleDelete(movie._id)}
-          className="btn btn-danger btn-sm"
-        >
-          Delete
-        </button>
-      ),
+      content: (movie) =>
+        user &&
+        user.isAdmin && (
+          <button
+            onClick={() => handleDelete(movie._id)}
+            className="btn btn-danger btn-sm"
+          >
+            Delete
+          </button>
+        ),
     },
   ];
 

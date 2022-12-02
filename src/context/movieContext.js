@@ -29,6 +29,12 @@ const MovieContextProvider = ({ children }) => {
   };
 
   const handleUpdate = (movie) => {
+    // const updatedMovie = { ...movie };
+    // updatedMovie.genre = genres.find((g) => g._id === updatedMovie.genreId);
+    // delete updatedMovie.genreId;
+
+    // const restMovies = allMovies.filter((m) => m._id !== updatedMovie._id);
+    // setAllMovies([...restMovies, updatedMovie]);
     return movie;
   };
 

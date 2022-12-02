@@ -4,7 +4,7 @@ import Joi from 'joi-browser';
 import Input from './common/input';
 import Form from './common/form';
 import FormButton from './common/formButton';
-import { login as userLogin } from '../services/authService';
+import auth from '../services/authService';
 
 const schema = {
   username: Joi.string().email().min(5).required().label('Username'),
@@ -18,8 +18,7 @@ const LoginForm = () => {
   const handleSubmit = async () => {
     try {
       const { username, password } = login;
-      const { data: jwt } = await userLogin(username, password);
-      localStorage.setItem('token', jwt);
+      await auth.login(username, password);
       window.location = '/';
     } catch (error) {
       if (error.response && error.response.status === 400) {

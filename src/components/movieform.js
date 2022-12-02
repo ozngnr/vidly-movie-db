@@ -58,15 +58,9 @@ const MovieForm = () => {
     fetchData();
   }, [allMovies, movieId, navigate]);
 
-  const handleSubmit = () => {
-    const updatedMovie = { ...movie };
-    updatedMovie.genre = genres.find((g) => g._id === updatedMovie.genreId);
-    delete updatedMovie.genreId;
-
-    const restMovies = allMovies.filter((m) => m._id !== updatedMovie._id);
-    setAllMovies([...restMovies, updatedMovie]);
-    saveMovie(movie);
-    navigate('/movies');
+  const handleSubmit = async () => {
+    await saveMovie(movie);
+    navigate('/movies', { replace: true });
   };
 
   return (

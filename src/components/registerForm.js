@@ -4,6 +4,7 @@ import Form from './common/form';
 import FormButton from './common/formButton';
 import Input from './common/input';
 import { register } from '../services/userService';
+import auth from '../services/authService';
 
 const registerSchema = {
   username: Joi.string().email().required().label('Username'),
@@ -18,7 +19,8 @@ const RegisterForm = () => {
   const doSubmit = async () => {
     try {
       const response = await register(user);
-      localStorage.setItem('token', response.headers['x-auth-token']);
+      console.log(response);
+      auth.loginWithJwt(response.headers['x-auth-token']);
       window.location = '/';
     } catch (error) {
       if (error.response && error.response.status === 400) {
