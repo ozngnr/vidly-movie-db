@@ -5,6 +5,7 @@ import Input from './common/input';
 import Form from './common/form';
 import FormButton from './common/formButton';
 import auth from '../services/authService';
+import { Navigate, useLocation } from 'react-router-dom';
 
 const schema = {
   username: Joi.string().email().min(5).required().label('Username'),
@@ -14,12 +15,13 @@ const schema = {
 const LoginForm = () => {
   const [login, setLogin] = useState({ username: '', password: '' });
   const [errors, setErrors] = useState({});
+  const { state } = useLocation();
 
   const handleSubmit = async () => {
     try {
       const { username, password } = login;
       await auth.login(username, password);
-      window.location = '/';
+      window.location = state ? state.pathname : '/';
     } catch (error) {
       if (error.response && error.response.status === 400) {
         console.log(error.response);
@@ -31,6 +33,8 @@ const LoginForm = () => {
     }
     console.log('submitted');
   };
+
+  if (auth.getCurrentUser()) return <Navigate to="/" />;
 
   return (
     <div className="form">

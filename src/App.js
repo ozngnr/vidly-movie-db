@@ -10,6 +10,7 @@ import Customers from './components/customers';
 import RegisterForm from './components/registerForm';
 import Rentals from './components/rentals';
 import auth from './services/authService';
+import ProtectedRoute from './components/common/protectedRoute';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -32,10 +33,9 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/movies" replace />} />
           <Route path="movies" element={<Movies user={user} />} />
-          <Route
-            path="movies/:movieId"
-            element={!user ? <Navigate to="/login" /> : <MovieForm />}
-          />
+          <Route element={<ProtectedRoute />}>
+            <Route path="movies/:movieId" element={<MovieForm />} />
+          </Route>
           <Route path="customers" element={<Customers />} />
           <Route path="rentals" element={<Rentals />} />
           <Route path="login" element={<LoginForm />} />
