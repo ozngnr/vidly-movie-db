@@ -12,6 +12,7 @@ import Rentals from './components/rentals';
 import auth from './services/authService';
 import ProtectedRoute from './components/common/protectedRoute';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
 const App = () => {
@@ -20,7 +21,6 @@ const App = () => {
   useEffect(() => {
     try {
       const user = auth.getCurrentUser();
-      console.log(user);
       setUser(user);
     } catch (error) {}
   }, []);
@@ -36,7 +36,7 @@ const App = () => {
           <Route element={<ProtectedRoute />}>
             <Route path="movies/:movieId" element={<MovieForm />} />
           </Route>
-          <Route path="customers" element={<Customers />} />
+          <Route path="customers" element={<Customers user={user} />} />
           <Route path="rentals" element={<Rentals />} />
           <Route path="login" element={<LoginForm />} />
           <Route path="logout" element={<Logout />} />

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, createContext } from 'react';
 import { getGenres } from '../services/genreService';
 import { deleteMovie, getMovies } from '../services/movieService';
-import 'react-toastify/dist/ReactToastify.css';
 
 const MovieContext = createContext();
 
@@ -11,6 +10,7 @@ const MovieContextProvider = ({ children }) => {
   const [selectedGenre, setSelectedGenre] = useState('All Genres');
   const [page, setPage] = useState({ currentPage: 1, pageSize: 4 });
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDelete = async (id) => {
     const originalMovies = [...allMovies];
@@ -28,7 +28,7 @@ const MovieContextProvider = ({ children }) => {
     }
   };
 
-  const handleUpdate = (movie) => {
+  const handleMovieUpdate = (movie) => {
     // const updatedMovie = { ...movie };
     // updatedMovie.genre = genres.find((g) => g._id === updatedMovie.genreId);
     // delete updatedMovie.genreId;
@@ -67,6 +67,7 @@ const MovieContextProvider = ({ children }) => {
   useEffect(() => {
     // Get genres and movies from the database
     const fetchData = async () => {
+      setIsLoading(true);
       const { data } = await getGenres();
 
       const genres = [
@@ -81,6 +82,7 @@ const MovieContextProvider = ({ children }) => {
     };
 
     fetchData();
+    setIsLoading(false);
   }, []);
 
   return (
@@ -100,6 +102,7 @@ const MovieContextProvider = ({ children }) => {
         setSelectedGenre,
         searchQuery,
         setSearchQuery,
+        isLoading,
       }}
     >
       {children}

@@ -7,7 +7,7 @@ import Form from './common/form';
 import Input from './common/input';
 import FormButton from './common/formButton';
 import Select from './common/select';
-import { saveMovie, getMovie } from '../services/movieService';
+import { saveMovie } from '../services/movieService';
 
 const schema = {
   _id: Joi.any(),
@@ -36,26 +36,19 @@ const MovieForm = () => {
   useEffect(() => {
     if (movieId === 'new') return;
 
-    const fetchData = async () => {
-      try {
-        const { data: movieInDb } = await getMovie(movieId);
-        console.log(movieInDb);
+    const movieInDb = allMovies.find((m) => m._id === movieId);
 
-        setMovie({
-          _id: movieInDb._id,
-          title: movieInDb.title,
-          genreId: movieInDb.genre._id,
-          numberInStock: movieInDb.numberInStock,
-          dailyRentalRate: movieInDb.dailyRentalRate,
-        });
-      } catch (error) {
-        if (error.response && error.response.status === 404) {
-          navigate('/not-found');
-        }
-      }
-    };
-
-    fetchData();
+    if (movieInDb) {
+      setMovie({
+        _id: movieInDb._id,
+        title: movieInDb.title,
+        genreId: movieInDb.genre._id,
+        numberInStock: movieInDb.numberInStock,
+        dailyRentalRate: movieInDb.dailyRentalRate,
+      });
+    } else {
+      navigate('/not-found');
+    }
   }, [allMovies, movieId, navigate]);
 
   const handleSubmit = async () => {

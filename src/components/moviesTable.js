@@ -1,11 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { Table, TableBody, TableHeader } from './common/table';
 import Like from './common/like';
 import { MovieContext } from '../context/movieContext';
-import { Table, TableBody, TableHeader } from './common/table';
-import { Link } from 'react-router-dom';
 import auth from '../services/authService';
-import { useEffect } from 'react';
-import { useMemo } from 'react';
 
 const MoviesTable = ({ movies, onSort, sortColumn, user }) => {
   const { toggleLike, handleDelete } = useContext(MovieContext);
@@ -34,6 +32,7 @@ const MoviesTable = ({ movies, onSort, sortColumn, user }) => {
 
   useEffect(() => {
     const user = auth.getCurrentUser();
+
     const deleteColumn = {
       key: 'delete',
       content: (movie) => (

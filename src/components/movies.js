@@ -20,6 +20,7 @@ const Movies = ({ user }) => {
     handleGenreSelect,
     page,
     handlePageChange,
+    isLoading,
   } = useContext(MovieContext);
 
   // Sort movies
@@ -36,7 +37,7 @@ const Movies = ({ user }) => {
   const { currentPage, pageSize } = page;
 
   useEffect(() => {
-    let filtered = sortedMovies;
+    let filtered = [...sortedMovies];
 
     if (searchQuery) {
       filtered = sortedMovies.filter((m) =>
@@ -51,6 +52,8 @@ const Movies = ({ user }) => {
     setMoviesCount(filtered.length);
     setMovies(movies);
   }, [sortedMovies, selectedGenre, currentPage, pageSize, searchQuery]);
+
+  if (isLoading) return <p>Loading...</p>;
 
   return (
     <div className="row">

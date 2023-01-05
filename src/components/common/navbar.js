@@ -30,6 +30,8 @@ const NavBar = ({ user }) => {
             <NavLink className="nav-link" to="rentals">
               Rentals
             </NavLink>
+          </div>
+          <div className="navbar-nav ms-auto">
             {user ? (
               <>
                 <NavLink className="nav-link" to="profile">
@@ -41,11 +43,11 @@ const NavBar = ({ user }) => {
               </>
             ) : (
               <>
-                <NavLink className="nav-link" to="login">
-                  Login
-                </NavLink>
                 <NavLink className="nav-link" to="register">
                   Register
+                </NavLink>
+                <NavLink className="nav-link" to="login">
+                  Login
                 </NavLink>
               </>
             )}
