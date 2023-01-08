@@ -18,8 +18,9 @@ const Movies = ({ user }) => {
     searchQuery,
     handleSearch,
     handleGenreSelect,
-    page,
-    handlePageChange,
+    currentPage,
+    pageSize,
+    setCurrentPage,
     isLoading,
   } = useContext(MovieContext);
 
@@ -30,12 +31,10 @@ const Movies = ({ user }) => {
     sortColumn,
   } = useSortableData(allMovies, { path: 'title', order: 'asc' });
 
-  const [movies, setMovies] = useState([]);
-  const [moviesCount, setMoviesCount] = useState(sortedMovies.length);
+  const [movies, setMovies] = useState(sortedMovies);
+  const [moviesCount, setMoviesCount] = useState(movies.length);
 
   //Filter movies
-  const { currentPage, pageSize } = page;
-
   useEffect(() => {
     let filtered = [...sortedMovies];
 
@@ -93,9 +92,9 @@ const Movies = ({ user }) => {
 
         <Pagination
           itemsCount={moviesCount}
-          pageSize={pageSize}
+          onPageChange={setCurrentPage}
           currentPage={currentPage}
-          onPageChange={handlePageChange}
+          pageSize={pageSize}
         />
       </div>
     </div>

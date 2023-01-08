@@ -3,12 +3,13 @@ import { getGenres } from '../services/genreService';
 import { deleteMovie, getMovies } from '../services/movieService';
 
 const MovieContext = createContext();
+const pageSize = 4;
 
 const MovieContextProvider = ({ children }) => {
   const [allMovies, setAllMovies] = useState([]);
   const [genres, setGenres] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState('All Genres');
-  const [page, setPage] = useState({ currentPage: 1, pageSize: 4 });
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,18 +39,14 @@ const MovieContextProvider = ({ children }) => {
     return movie;
   };
 
-  const handlePageChange = (page) => {
-    setPage((prevPage) => ({ ...prevPage, currentPage: page }));
-  };
-
   const handleGenreSelect = (genre) => {
     setSelectedGenre(genre);
-    setPage({ ...page, currentPage: 1 });
+    setCurrentPage(1);
   };
 
   const handleSearch = (genre) => {
     setSelectedGenre('All Genres');
-    setPage({ ...page, currentPage: 1 });
+    setCurrentPage(1);
     setSearchQuery(genre);
   };
 
@@ -91,10 +88,10 @@ const MovieContextProvider = ({ children }) => {
         allMovies,
         setAllMovies,
         genres,
-        page,
-        setPage,
+        currentPage,
+        pageSize,
         handleDelete,
-        handlePageChange,
+        setCurrentPage,
         handleGenreSelect,
         handleSearch,
         toggleLike,

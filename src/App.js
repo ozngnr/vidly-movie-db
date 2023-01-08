@@ -11,7 +11,7 @@ import RegisterForm from './components/registerForm';
 import Rentals from './components/rentals';
 import auth from './services/authService';
 import ProtectedRoute from './components/common/protectedRoute';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -22,7 +22,18 @@ const App = () => {
     try {
       const user = auth.getCurrentUser();
       setUser(user);
-    } catch (error) {}
+
+      const newUser = sessionStorage.getItem('newUser');
+      if (newUser) {
+        toast.success(`
+        Thanks for signing up!
+        You are now logged in.
+      `);
+        sessionStorage.clear();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
   return (

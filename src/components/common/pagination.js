@@ -1,29 +1,62 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import usePagination from '../../hooks/usePagination';
 
 const Pagination = ({ itemsCount, onPageChange, currentPage, pageSize }) => {
-  const pagesCount = Math.ceil(itemsCount / pageSize);
-  /**
-   * Create page numbers for pagination depending on
-   * the amout of items in the DB and page size
-   */
-  const pages = [...Array(pagesCount + 1).keys()].slice(1);
+  const { paginationItems: pages, totalPageCount } = usePagination({
+    currentPage,
+    itemsCount,
+    pageSize,
+  });
 
   return (
     <nav aria-label="Page navigation">
-      <ul className="pagination">
-        {pages.map((page) => (
+      {pages.length > 0 && (
+        <ul className="mb-0 pagination pagination-sm">
           <li
-            className={currentPage === page ? 'page-item active' : 'page-item'}
-            key={page}
-            style={{ cursor: 'pointer' }}
+            className={currentPage === 1 ? 'page-item disabled' : 'page-item'}
           >
-            <button className="page-link" onClick={() => onPageChange(page)}>
-              {page}
+            <button
+              className="page-link"
+              aria-label="Previous"
+              onClick={() => onPageChange((prevPage) => prevPage - 1)}
+            >
+              <span aria-hidden="true">&laquo;</span>
             </button>
           </li>
-        ))}
-      </ul>
+          {pages.map((page, idx) => (
+            <li
+              className={
+                currentPage === page ? 'page-item active' : 'page-item'
+              }
+              key={`page-${idx}`}
+              style={{ cursor: 'pointer' }}
+            >
+              <button
+                className="page-link"
+                onClick={() => page !== '...' && onPageChange(page)}
+              >
+                {page}
+              </button>
+            </li>
+          ))}
+          <li
+            className={
+              currentPage === totalPageCount
+                ? 'page-item disabled'
+                : 'page-item'
+            }
+          >
+            <button
+              className="page-link"
+              aria-label="Next"
+              onClick={() => onPageChange(currentPage + 1)}
+            >
+              <span aria-hidden="true">&raquo;</span>
+            </button>
+          </li>
+        </ul>
+      )}
     </nav>
   );
 };

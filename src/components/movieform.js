@@ -7,7 +7,7 @@ import Form from './common/form';
 import Input from './common/input';
 import FormButton from './common/formButton';
 import Select from './common/select';
-import { saveMovie } from '../services/movieService';
+import { getMovie, saveMovie } from '../services/movieService';
 
 const schema = {
   _id: Joi.any(),
@@ -24,7 +24,7 @@ const schema = {
 const MovieForm = () => {
   const navigate = useNavigate();
   const { movieId } = useParams();
-  const { allMovies, setAllMovies, genres } = useContext(MovieContext);
+  const { allMovies, genres } = useContext(MovieContext);
   const [movie, setMovie] = useState({
     title: '',
     genreId: '',
@@ -36,19 +36,27 @@ const MovieForm = () => {
   useEffect(() => {
     if (movieId === 'new') return;
 
-    const movieInDb = allMovies.find((m) => m._id === movieId);
+    const fetchData = async () => {
+      try {
+        // const movieInDb = allMovies.find((m) => m._id === movieId);
+        const { data: movieInDb } = await getMovie(movieId);
+        console.log(movieInDb);
 
-    if (movieInDb) {
-      setMovie({
-        _id: movieInDb._id,
-        title: movieInDb.title,
-        genreId: movieInDb.genre._id,
-        numberInStock: movieInDb.numberInStock,
-        dailyRentalRate: movieInDb.dailyRentalRate,
-      });
-    } else {
-      navigate('/not-found');
-    }
+        setMovie({
+          _id: movieInDb._id,
+          title: movieInDb.title,
+          genreId: movieInDb.genre._id,
+          numberInStock: movieInDb.numberInStock,
+          dailyRentalRate: movieInDb.dailyRentalRate,
+        });
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          navigate('/not-found');
+        }
+      }
+    };
+
+    fetchData();
   }, [allMovies, movieId, navigate]);
 
   const handleSubmit = async () => {
@@ -68,7 +76,12 @@ const MovieForm = () => {
         setErrors={setErrors}
       >
         <Input label="Title" name="title" />
-        <Select label="Genre" name="genreId" options={genres.slice(1)} />
+        <Select
+          id="genre-select"
+          label="Genre"
+          name="genreId"
+          options={genres.slice(1)}
+        />
         <Input label="Number In Stock" name="numberInStock" type="number" />
         <Input label="Rate" name="dailyRentalRate" />
         <FormButton label="Save" />

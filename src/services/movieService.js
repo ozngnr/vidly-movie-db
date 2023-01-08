@@ -10,8 +10,8 @@ export const getMovies = () => {
   return http.get(apiEndpoint);
 };
 
-export const getMovie = (movieId) => {
-  return http.get(movieUrl(movieId));
+export const getMovie = async (movieId) => {
+  return await http.get(movieUrl(movieId));
 };
 
 export const saveMovie = (movie) => {

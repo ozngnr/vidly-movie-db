@@ -1,17 +1,17 @@
 import React, { useContext } from 'react';
 import { FormContext } from './form';
 
-const Select = ({ name, label, options }) => {
+const Select = ({ id, name, label, options }) => {
   const { formData, errors, handleChange } = useContext(FormContext);
   const error = errors[name];
 
   return (
     <div className="mb-3">
-      <label htmlFor="genre-select" className="form-label">
+      <label htmlFor={id} className="form-label">
         {label}
       </label>
       <select
-        id="genre-select"
+        id={id}
         name={name}
         className="form-select form-select-md"
         aria-label=".form-select-lg example"

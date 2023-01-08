@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import Joi from 'joi-browser';
 
 import Input from './common/input';
 import Form from './common/form';
 import FormButton from './common/formButton';
 import auth from '../services/authService';
-import { Navigate, useLocation } from 'react-router-dom';
 
 const schema = {
   username: Joi.string().email().min(5).required().label('Username'),
@@ -16,6 +16,8 @@ const LoginForm = () => {
   const [login, setLogin] = useState({ username: '', password: '' });
   const [errors, setErrors] = useState({});
   const { state } = useLocation();
+
+  console.log(state);
 
   const handleSubmit = async () => {
     try {

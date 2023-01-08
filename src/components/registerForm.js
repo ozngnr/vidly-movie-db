@@ -21,6 +21,7 @@ const RegisterForm = () => {
       const response = await register(user);
       console.log(response);
       auth.loginWithJwt(response.headers['x-auth-token']);
+      sessionStorage.setItem('newUser', true);
       window.location = '/';
     } catch (error) {
       if (error.response && error.response.status === 400) {

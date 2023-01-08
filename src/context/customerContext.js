@@ -5,7 +5,8 @@ const CustomerContext = createContext();
 
 const CustomerContextProvider = ({ children }) => {
   const [allCustomers, setAllCustomers] = useState([]);
-  const [page, setPage] = useState({ currentPage: 1, pageSize: 5 });
+  const [pageSize, setPageSize] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -16,12 +17,13 @@ const CustomerContextProvider = ({ children }) => {
     fetchCustomers();
   }, []);
 
-  const handlePageChange = (page) => {
-    setPage((prevPage) => ({ ...prevPage, currentPage: page }));
+  const handlePageSize = (e) => {
+    setCurrentPage(1);
+    setPageSize(+e.target.value);
   };
 
   const handleSearch = (customer) => {
-    setPage({ ...page, currentPage: 1 });
+    setCurrentPage(1);
     setSearchQuery(customer);
   };
 
@@ -29,8 +31,10 @@ const CustomerContextProvider = ({ children }) => {
     <CustomerContext.Provider
       value={{
         allCustomers,
-        page,
-        handlePageChange,
+        currentPage,
+        setCurrentPage,
+        pageSize,
+        handlePageSize,
         searchQuery,
         handleSearch,
       }}
