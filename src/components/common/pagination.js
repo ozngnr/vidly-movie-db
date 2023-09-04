@@ -8,7 +8,7 @@ const Pagination = ({ itemsCount, onPageChange, currentPage, pageSize }) => {
     itemsCount,
     pageSize,
   });
-
+  
   return (
     <nav aria-label="Page navigation">
       {pages.length > 0 && (

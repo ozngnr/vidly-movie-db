@@ -21,6 +21,7 @@ const App = () => {
   useEffect(() => {
     try {
       const user = auth.getCurrentUser();
+      console.log(user);
       setUser(user);
 
       const newUser = sessionStorage.getItem('newUser');

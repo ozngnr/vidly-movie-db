@@ -7,7 +7,7 @@ import Form from './common/form';
 import Input from './common/input';
 import FormButton from './common/formButton';
 import Select from './common/select';
-import { getMovie, saveMovie } from '../services/movieService';
+import { getMovie } from '../services/movieService';
 
 const schema = {
   _id: Joi.any(),
@@ -24,7 +24,7 @@ const schema = {
 const MovieForm = () => {
   const navigate = useNavigate();
   const { movieId } = useParams();
-  const { allMovies, genres } = useContext(MovieContext);
+  const { allMovies, genres, handleMovieUpdate } = useContext(MovieContext);
   const [movie, setMovie] = useState({
     title: '',
     genreId: '',
@@ -59,8 +59,8 @@ const MovieForm = () => {
     fetchData();
   }, [allMovies, movieId, navigate]);
 
-  const handleSubmit = async () => {
-    await saveMovie(movie);
+  const handleSubmit = () => {
+    handleMovieUpdate(movie);
     navigate('/movies', { replace: true });
   };
 

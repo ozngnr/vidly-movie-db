@@ -1,9 +1,11 @@
 import React, { useState, useEffect, createContext } from 'react';
 import { getGenres } from '../services/genreService';
-import { deleteMovie, getMovies } from '../services/movieService';
+import { deleteMovie, getMovies, saveMovie } from '../services/movieService';
+import auth from '../services/authService';
+import { toast } from 'react-toastify';
 
 const MovieContext = createContext();
-const pageSize = 4;
+const pageSize = 5;
 
 const MovieContextProvider = ({ children }) => {
   const [allMovies, setAllMovies] = useState([]);
@@ -29,14 +31,23 @@ const MovieContextProvider = ({ children }) => {
     }
   };
 
-  const handleMovieUpdate = (movie) => {
-    // const updatedMovie = { ...movie };
-    // updatedMovie.genre = genres.find((g) => g._id === updatedMovie.genreId);
-    // delete updatedMovie.genreId;
+  const handleMovieUpdate = async (movie) => {
+    const originalMovies = [...allMovies]
 
-    // const restMovies = allMovies.filter((m) => m._id !== updatedMovie._id);
-    // setAllMovies([...restMovies, updatedMovie]);
-    return movie;
+    const updatedMovie = { ...movie };
+    updatedMovie.genre = genres.find((g) => g._id === movie.genreId);
+    delete updatedMovie.genreId;
+
+    const restMovies = allMovies.filter((m) => m._id !== movie._id);
+    setAllMovies([...restMovies, updatedMovie]);
+
+    try {
+      await saveMovie(movie)
+    } catch (err) {
+      console.error(err);
+      setAllMovies(originalMovies);
+      toast.error("Failed to save movie")
+    }
   };
 
   const handleGenreSelect = (genre) => {
@@ -50,36 +61,37 @@ const MovieContextProvider = ({ children }) => {
     setSearchQuery(genre);
   };
 
-  const toggleLike = (id) => {
-    const updatedMovies = allMovies.map((movie) => {
-      if (movie._id === id) {
-        return { ...movie, liked: !movie.liked };
-      }
-      return movie;
-    });
-
-    setAllMovies(updatedMovies);
-  };
 
   useEffect(() => {
     // Get genres and movies from the database
+    setIsLoading(true);
+    const user = auth.getCurrentUser();
+
     const fetchData = async () => {
-      setIsLoading(true);
-      const { data } = await getGenres();
+      try {
+        const allPromise = Promise.all([getGenres(), getMovies()]);
+        const values = await allPromise
 
-      const genres = [
-        { _id: '5b21ca3eeb7f6fbccd47182s', name: 'All Genres' },
-        ...data,
-      ];
-
-      const { data: movies } = await getMovies();
-
-      setGenres(genres);
-      setAllMovies(movies);
+        const genres = [
+          { _id: '5b21ca3eeb7f6fbccd47182s', name: 'All Genres' },
+          ...values[0].data,
+        ];
+        const movies = values[1].data.map(movie => {
+          if (user && user.likedMovies.includes(movie._id)) {
+            return {...movie, liked: true};
+          }
+          return movie
+        })
+        setGenres(genres);
+        setAllMovies(movies);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchData();
-    setIsLoading(false);
   }, []);
 
   return (
@@ -91,10 +103,10 @@ const MovieContextProvider = ({ children }) => {
         currentPage,
         pageSize,
         handleDelete,
+        handleMovieUpdate,
         setCurrentPage,
         handleGenreSelect,
         handleSearch,
-        toggleLike,
         selectedGenre,
         setSelectedGenre,
         searchQuery,

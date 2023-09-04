@@ -11,7 +11,6 @@ const usePagination = ({
 
   const range = (start, end) => {
     const length = end - start + 1;
-
     return Array.from({ length }, (_, idx) => idx + start);
   };
 
@@ -26,7 +25,7 @@ const usePagination = ({
       totalPageCount
     );
     const showLeftDots = leftSiblingIndex > 3;
-    const showRightDots = rightSiblingIndex < totalPageCount - 2;
+    const showRightDots = rightSiblingIndex <= totalPageCount - 2;
 
     if (!showLeftDots && showRightDots) {
       let leftItemCount = 3 + 2 * siblingCount;
@@ -47,6 +46,7 @@ const usePagination = ({
       );
       return [1, '...', ...rightRange];
     }
+
   }, [currentPage, siblingCount, totalPageCount, totalPageNumbers]);
 
   return { paginationItems, totalPageCount };
